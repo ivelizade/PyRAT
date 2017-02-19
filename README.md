@@ -8,6 +8,7 @@ Coded By Black Viking
     [>] You can use target system's shell
     [>] You can show messages on target system, just type 'message TEXT'
     [>] You can get target system's info, type 'info()'
+    [>] You can execute programs in a new process, type ":execute notepad"
 
 # GUI
 ![alt tag](http://i.hizliresim.com/vXkm74.png)
