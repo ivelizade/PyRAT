@@ -44,8 +44,7 @@ def menu():
     while True:
         command = raw_input("[%s@%s]~$ "%(hostname, addr[0]))
         if command == "clear()":
-            os.system("cls")
-
+            os.system("cls") if os.name == "nt"  else os.system("clear")
         elif command == "help()":
             help()
 
