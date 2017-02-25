@@ -6,12 +6,12 @@ Remote Administration Tool, written in Python
 Coded By Black Viking
 
 	Commands:
-	    download 		    : Download files from client.
-	    upload		    : Upload files from server to client.
+	    download                : Download files from client.
+	    upload                  : Upload files to client from server.
 	    message TEXT            : Show messages on target system.
 	    info()                  : Show target system's info.
 	    execute PROGRAM ARGS    : Execute programs in a new process.
-	
+
 	Execute programs on local machine:
 	    :dir ==> with ":"
 	    :cls
