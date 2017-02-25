@@ -67,11 +67,11 @@ def menu():
             send(command)
 def start():
     while True:
-        main()
-        menu()
+        try:
+            main()
+            menu()
+        except:
+            start()
 
 if __name__ == "__main__":
-    try:
-        start()
-    except:
-        start()
+    start()
