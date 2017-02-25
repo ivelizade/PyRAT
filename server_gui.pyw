@@ -55,7 +55,7 @@ def send(event=False):
 Commands:
     message TEXT            : Show messages on target system.
     info()                  : Show target system's info.
-    execute PROGRAM ARGS    : Execute programs in a new process\n
+    execute PROGRAM ARGS    : Execute programs in a new process
     
 Execute programs on local machine:
     :dir ==> with ":"
