@@ -9,6 +9,11 @@ Coded By Black Viking
 	    message TEXT            : Show messages on target system.
 	    info()                  : Show target system's info.
 	    execute PROGRAM ARGS    : Execute programs in a new process
+	
+	Execute programs on local machine:
+	    :dir ==> with ":"
+	    :cls
+	    :clear
 
 # GUI
 ![alt tag](http://i.hizliresim.com/vXkm74.png)
