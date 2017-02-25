@@ -57,8 +57,18 @@ def menu():
             menu()
 
         elif ":" in command:
-            os.system(command.replace(":", ""))
-            menu()
+            command = command.replace(":", "")
+            if command[:2].decode("utf-8") == 'cd':
+                try:
+                    os.chdir(command[3:].decode("utf-8"))
+                    menu()
+                except OSError:
+                    print "%s: No such file or directory"%(command[3:])
+                    menu()
+                    
+            else:
+                os.system(command)
+                menu()
 
         elif command == "": 
             command = " "
