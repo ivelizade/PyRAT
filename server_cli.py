@@ -141,8 +141,8 @@ def start():
         try:
             main()
             menu()
-        except Exception as e:
-            print e
+        except:
+			start()
 
 if __name__ == "__main__":
     start()
