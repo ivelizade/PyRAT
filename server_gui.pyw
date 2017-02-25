@@ -100,9 +100,8 @@ def start():
             s.listen(1)
             cli, addr = s.accept()
             menu()
-        except Exception as e:
-            print e
-            sys.exit()
+        except:
+	    start()
 
 if __name__ == "__main__":
     start()
