@@ -55,7 +55,12 @@ def send(event=False):
 Commands:
     message TEXT            : Show messages on target system.
     info()                  : Show target system's info.
-    execute PROGRAM ARGS    : Execute programs in a new process\n"""+"\n"+"="*73+"\n")
+    execute PROGRAM ARGS    : Execute programs in a new process\n
+    
+Execute programs on local machine:
+    :dir ==> with ":"
+    :cls
+    :clear"""+"\n"+"="*73+"\n")
         return
         
     elif x == "":
