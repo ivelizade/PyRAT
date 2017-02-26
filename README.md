@@ -22,3 +22,6 @@ Coded By Black Viking
 
 # Command Line
 ![alt tag](http://i.hizliresim.com/Egz6DB.png)
+
+# Generate exec
+![alt tag](http://i.hizliresim.com/ojYr4q.png)
