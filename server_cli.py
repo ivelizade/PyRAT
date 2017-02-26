@@ -5,7 +5,6 @@
 
 """
 [~] Author : Black Viking
-[~] Version: 0.2
 """
 
 END_OF_FILE = "(((END_OF_FILE)))"
