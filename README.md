@@ -1,4 +1,4 @@
-# PyRAT V 0.3
+# PyRAT
 PyRAT project started!
 
 Remote Administration Tool, written in Python
