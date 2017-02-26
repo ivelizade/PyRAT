@@ -6,6 +6,8 @@ Remote Administration Tool, written in Python
 Coded By Black Viking
 
 	Commands:
+	    help() 					: Show this message.
+		screenshot(): 			: Take a screenshot from client and download image file.
 	    download                : Download files from client.
 	    upload                  : Upload files to client from server.
 	    message TEXT            : Show messages on target system.
