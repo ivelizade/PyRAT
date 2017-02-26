@@ -21,6 +21,4 @@ Coded By Black Viking
 ![alt tag](http://i.hizliresim.com/vXkm74.png)
 
 # Command Line
-![alt tag](http://i.hizliresim.com/0lYGPY.png)
-![alt tag](http://i.hizliresim.com/An9yoB.png)
-![alt tag](http://i.hizliresim.com/5LZGA5.png)
+![alt tag](http://i.hizliresim.com/Egz6DB.png)
