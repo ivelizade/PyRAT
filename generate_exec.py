@@ -22,6 +22,7 @@ Usage:
 	python2 generate_exec.py -ip 127.0.0.1 -p 8080       #for an ip adress
 	python2 generate_exec.py -h vkng.duckdns.org -p 1604 #for a dns adress\n"""
 	sys.exit()
+	
 def generate_exec(host, port, source):
 	print """
 [-] Host: %s
@@ -36,6 +37,12 @@ def generate_exec(host, port, source):
 
 def main():
 	if len(sys.argv) == 5:
+		if os.path.exists("exec") == True:
+			os.chdir("exec")
+		else:
+			os.mkdir("exec")
+			os.chdir("exec")
+
 		host_type = sys.argv[1]
 		host = sys.argv[2]	
 		port = sys.argv[4]
