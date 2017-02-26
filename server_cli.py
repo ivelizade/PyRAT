@@ -168,7 +168,8 @@ def start():
             main()
             menu()
         except Exception as e:
-	    print e
+	    print bright + red + e + "\n"
+		start()
 
 if __name__ == "__main__":
     init(autoreset=True)
