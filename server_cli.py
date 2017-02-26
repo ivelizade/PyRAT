@@ -71,7 +71,7 @@ def upload(command):
             l = f.read(1024)
         f.close()
         cli.send(END_OF_FILE)
-        print green + crypt(cli.recv(1024), False)+"\n"
+        print bright + yellow + crypt(cli.recv(1024), False)+"\n"
         menu()
 
     except IOError:
