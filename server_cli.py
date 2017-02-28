@@ -180,8 +180,8 @@ def start():
             main()
             menu()
         except Exception as e:
-			print bright + Fore.RED + "Error:\n%s\n"%(e)
-			start()
+	    print bright + Fore.RED + "Error:\n%s\n"%(e)
+	    start()
 
 if __name__ == "__main__":
     init(autoreset=True)
