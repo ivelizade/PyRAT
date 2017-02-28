@@ -32,7 +32,7 @@ def generate_exec(host, port, source):
 	file.write(source)
 	file.close()
 
-	command = subprocess.Popen("pyinstaller --onefile --noconsole template.py", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	command = subprocess.Popen(["pyinstaller", "--onefile", "--noconsole", "template.py"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         data = command.stdout.read() + command.stderr.read()
 	os.remove("template.py")
 	file = open("%s%slog.txt"%(os.getcwd(), os.sep), "w")
