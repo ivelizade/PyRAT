@@ -9,7 +9,7 @@
 
 END_OF_FILE = "(((END_OF_FILE)))"
 
-from Tkinter import *
+import ctypes
 import socket
 import subprocess
 import os
@@ -91,13 +91,11 @@ def screenshot(command):
     upload(command)
 
 
-def messageBox(message):
-    root = Tk()
-    root.attributes('-topmost', True)
-    root.title(message)
-    z = Label(text=message)
-    z.pack()
-    root.mainloop()
+def messageBox(text):
+    title = text
+    t=threading.Thread(target=ctypes.windll.user32.MessageBoxA, args=(None, text, title, 0))
+    t.daemon=True
+    t.start()
     
 def info():
     try:
