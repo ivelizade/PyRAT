@@ -32,17 +32,14 @@ def generate_exec(host, port, source):
 	file.write(source)
 	file.close()
 
-	command = subprocess.Popen(["pyinstaller", "--onefile", "--noconsole", "template.py"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-        data = command.stdout.read() + command.stderr.read()
+	cmd = "pyinstaller --onefile --noconsole template.py"
+	os.system(cmd)
 	os.remove("template.py")
-	file = open("%s%slog.txt"%(os.getcwd(), os.sep), "w")
-	file.write(data)
-	file.close()
+	raw_input("\n\n\n[*] Press Enter to continue...")
 	if os.path.exists("%s%sdist%stemplate.exe"%(os.getcwd(), os.sep, os.sep)) == True:
-                print "[+] Exe file (Windows) ==> %s"%(os.getcwd()+os.sep+"dist"+os.sep+"template.exe")
-		print "[+] See log file ==> %s"%(os.getcwd()+os.sep+"log.txt")
+		print "\n[+] Exe file (Windows) ==> %s"%(os.getcwd()+os.sep+"dist"+os.sep+"template.exe")
 	else:
-		print "[+] See log file ==> %s"%(os.getcwd()+os.sep+"log.txt")
+		sys.exit()
 
 def main():
 	if len(sys.argv) == 5:
