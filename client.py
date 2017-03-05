@@ -192,8 +192,7 @@ def start():
         try:
             connect()
             main()
-        except Exception as e:
-            print e
+        except:
             start()
 
 if __name__ == "__main__":
