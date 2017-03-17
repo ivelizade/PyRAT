@@ -3,9 +3,8 @@
 #
 #
 
-"""
-[~] Author : Black Viking
-"""
+__author__ = "Black Viking"
+__date__ = "17.03.2017"
 
 END_OF_FILE = "(((END_OF_FILE)))"
 
@@ -166,6 +165,8 @@ def main():
 
     pwd = crypt(cli.recv(1024), False)
     hostname = crypt(cli.recv(1024), False)
+
+    print bright + Fore.MAGENTA + "[*] Connection from ==> %s:%s\n"%(addr[0], addr[1])
 
 def menu():
     while True:
